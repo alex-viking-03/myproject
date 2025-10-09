@@ -20,4 +20,3 @@ Do you wanna know more?''')
 async def send_about(message: types.Message):
     await message.answer('''I'm bot of popular "NN keyboard shop". You can ask me questions about different keyboard modals we sell.''')
 if __name__ == '__main__':
-    executor.start_polling(dp)

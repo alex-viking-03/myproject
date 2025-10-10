@@ -23,9 +23,6 @@ Wooting
 ATK
 and others.
 Do you wanna know more?''')
-
-@dp.message(Command('start'))
-async def cmd_start(message: Message):
     user_id = message.from_user.id
     users.add(user_id)
     await message.answer("Now you're in users list.")

@@ -2,16 +2,28 @@ import asyncio
 import os
 from datetime import datetime
 
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.context import FSMContext
+import Prices
+
 import aiohttp
 import logging
 from dotenv import load_dotenv
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, FSInputFile
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.types import Message
 
+
+from aiogram.types import Message
 from aiogram.types import ErrorEvent
 from aiogram.exceptions import TelegramAPIError
+
+import math
+
+
+class Currency(StatesGroup):
+    currency = State()
 
 
 async def fetch_data(url: str, data_type: str):
@@ -32,15 +44,17 @@ async def fetch_data(url: str, data_type: str):
         return None
 
 
-async def get_phrase():
-    url = "https://zenquotes.io/api/random"
-    data = await fetch_data(url, "Phrase")
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            data = await response.json()
-            author = data[0]["a"]
-            phrase = data[0]["q"]
-            return f'<i>🗨️"{phrase}"</i>\n\n<b>-{author}</b>\n\nSource: {url}'
+async def convertation(currency, model):
+    url = "https://api.fxratesapi.com/latest"
+    data = await fetch_data(url, "Convertation")
+    if model in Prices.Keyboards.keys():
+        if currency == "USD":
+            price = Prices.Keyboards[model] // data["rates"]["KZT"]
+        elif currency == "RUB":
+            price = Prices.Keyboards[model] // data["rates"]["KZT"] * data["rates"]["RUB"]
+        elif currency == "KZT":
+            price = Prices.Keyboards[model]
+        return math.ceil(price)
 
 
 def get_keyboard_by_brand(brand):
@@ -68,9 +82,9 @@ def list_of_devices():
     )
 
 
-def models_of_keyboards(model):
+def models_of_keyboards(model, price, currency):
     if model == "wlmouse ying75":
-        text = ("<b>Price💰:</b> 135000 tenge\n"
+        text = (f"<b>Price💰:</b> {price} {currency}\n"
                 "<b>Layout:</b> 75% (84 keys)\n"
                 "<b>Material:</b> Forged Carbon\n"
                 "<b>Connection:</b> Wired USB Type-C\n"
@@ -162,7 +176,7 @@ def main_menu():
              InlineKeyboardButton(text="About Shop", callback_data="about shop")],
             [InlineKeyboardButton(text="Brands", callback_data="brands"),
              InlineKeyboardButton(text="Site", url="https://www.instagram.com/reel/DNksxjEtvAv/?igsh=MWQwdHh0eGM2NHg1ag==")],
-            [InlineKeyboardButton(text="Get phrase", callback_data="phrase")],
+            [InlineKeyboardButton(text="Change currency", callback_data="currency")],
             [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu")]
         ]
     )

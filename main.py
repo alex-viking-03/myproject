@@ -6,6 +6,7 @@ bot = defs.Bot(token=BOT_TOKEN)
 dp = defs.Dispatcher()
 BRAND = None
 USER_PATH = {}
+CURRENCY = "KZT"
 
 defs.logging.basicConfig(
     level = defs.logging.INFO,
@@ -19,31 +20,31 @@ async def send_hello(message: defs.types.Message):
     defs.logging.info(f'Start - User name: {message.from_user.first_name} - ID: {message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
     USER_PATH[message.from_user.id] = ["main"]
 
-    await message.answer(f'''<b>Hi, {message.from_user.first_name} ✋! I'm "NN device shop" telegram bot.
+    banner = defs.FSInputFile("C:/Users/khajj/OneDrive/Desktop/PM project/banner.jpg")
+    await message.answer_photo(banner, caption = f'''<b>Hi, {message.from_user.first_name} ✋! I'm "Hiru shop" telegram bot.
 Here you can buy the best devices from different manufacturers:</b>
 
+-WLmouse
 -Wooting
 -ATK
 
-Do you wanna know more?''', parse_mode="HTML")
-
-    await message.answer("**MAIN MENU**", reply_markup = defs.main_menu())
+Do you wanna know more?\n\n<b>***MAIN MENU***</b>''', reply_markup = defs.main_menu(), parse_mode="HTML")
 
 
 
-@dp.callback_query(lambda c: c.data == "phrase")
-async def phrase(callback_query: defs.types.CallbackQuery):
-    defs.logging.info(f'Back - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
+@dp.callback_query(lambda c: c.data == "currency")
+async def change_currency(callback_query: defs.types.CallbackQuery, state: defs.FSMContext):
+    await callback_query.message.edit_text("Select one of the following currencies:\nKZT\nRUB\nUSD")
+    await state.set_state(defs.Currency.currency)
 
-    text = await defs.get_phrase()
-    keyboard = defs.types.InlineKeyboardMarkup(
-        inline_keyboard=[
-            [defs.InlineKeyboardButton(text = "🔄Update", callback_data = "phrase")],
-            [defs.InlineKeyboardButton(text = "🏠Main menu", callback_data = "back_to_menu")]
-        ]
-    )
-    await callback_query.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML", disable_web_page_preview=True)
-
+@dp.message(defs.Currency.currency)
+async def currency(message: defs.types.Message, state: defs.FSMContext):
+    await state.update_data(currency = message.text.upper())
+    data = await state.get_data()
+    global CURRENCY
+    CURRENCY = data["currency"]
+    await message.answer(f"Currency: {CURRENCY}")
+    await send_hello(message)
 
 
 
@@ -131,7 +132,7 @@ async def mice(callback_query: defs.types.CallbackQuery):
     text, keyboard = defs.models_of_mouse(callback_query.data)
     model = callback_query.data
     if model == "WLmouse beast X Max":
-        pic = "https://www.wlmouse.com/cdn/shop/files/max-red.jpg?v=1755482399"
+        pic = defs.FSInputFile("C:/Users/khajj/OneDrive/Desktop/PM project/max-red.webp")
 
     await callback_query.message.answer_photo(
         photo = pic,
@@ -145,11 +146,13 @@ async def mice(callback_query: defs.types.CallbackQuery):
 async def keyboard(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'{callback_query.data} - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
+    global CURRENCY
     global USER_PATH
-    USER_PATH[callback_query.from_user.id].append("wlmouse_ying75")
+    USER_PATH[callback_query.from_user.id].append(callback_query.data)
 
+    price = await defs.convertation(CURRENCY, callback_query.data)
 
-    text, keyboard = defs.models_of_keyboards(callback_query.data)
+    text, keyboard = defs.models_of_keyboards(callback_query.data, price, CURRENCY)
     model = callback_query.data
 
     if model == "wlmouse ying75":
@@ -170,7 +173,7 @@ async def back_to_menu(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'Back to menu - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
     await callback_query.message.delete()
-    await callback_query.message.answer("**MAIN MENU**", reply_markup = defs.main_menu())
+    await send_hello(callback_query.message)
 
 
 
@@ -222,12 +225,23 @@ async def back(callback_query: defs.types.CallbackQuery):
 
 @dp.error()
 async def global_error_handler(error: defs.ErrorEvent):
+    # Логируем полный traceback (самое важное)
+    defs.logging.error(
+        f"Exception caught:\n{error.exception}"
+    )
+
     if isinstance(error.exception, defs.TelegramAPIError):
-        defs.logging.error("Telegram error", error.exception)
-        await error.update.message.answer(f"<b>Telegram error⚠️</b>: {error.exception}", parse_mode="HTML")
+        defs.logging.error(f"Telegram error: {error.exception}")
+        await error.update.message.answer(
+            f"<b>Telegram error⚠️</b>: {error.exception}",
+            parse_mode="HTML"
+        )
     else:
-        defs.logging.error("Something went wrong", error.exception)
-        await error.update.message.answer(f"<b>Something went wrong⚙️...Try again later⏳</b>", parse_mode="HTML")
+        defs.logging.error(f"Something went wrong: {error.exception}")
+        await error.update.message.answer(
+            "<b>Something went wrong⚙️...Try again later⏳</b>",
+            parse_mode="HTML"
+        )
 
 
 async def main():

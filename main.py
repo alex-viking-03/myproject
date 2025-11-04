@@ -1,3 +1,5 @@
+from aiogram.types import FSInputFile
+
 import defs
 
 defs.load_dotenv()
@@ -5,7 +7,6 @@ BOT_TOKEN = defs.os.getenv("BOT_TOKEN")
 bot = defs.Bot(token=BOT_TOKEN)
 dp = defs.Dispatcher()
 BRAND = None
-USER_PATH = {}
 CURRENCY = "KZT"
 
 defs.logging.basicConfig(
@@ -18,7 +19,6 @@ defs.logging.basicConfig(
 @dp.message(defs.Command('start'))
 async def send_hello(message: defs.types.Message):
     defs.logging.info(f'Start - User name: {message.from_user.first_name} - ID: {message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
-    USER_PATH[message.from_user.id] = ["main"]
 
     banner = defs.FSInputFile("C:/Users/khajj/OneDrive/Desktop/PM project/banner.jpg")
     await message.answer_photo(banner, caption = f'''<b>Hi, {message.from_user.first_name} ✋! I'm "Hiru shop" telegram bot.
@@ -32,13 +32,28 @@ Do you wanna know more?\n\n<b>***MAIN MENU***</b>''', reply_markup = defs.main_m
 
 
 
-@dp.callback_query(lambda c: c.data == "currency")
+@dp.callback_query(defs.F.data == "currency")
 async def change_currency(callback_query: defs.types.CallbackQuery, state: defs.FSMContext):
-    await callback_query.message.edit_text("Select one of the following currencies:\nKZT\nRUB\nUSD")
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
+
+    pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\currency.png")
+    await bot.send_photo(
+        chat_id = callback_query.from_user.id,
+        caption = "<b>Select one of the following currencies:</b>\nKZT\nRUB\nUSD",
+        parse_mode = "HTML",
+        photo = pic)
     await state.set_state(defs.Currency.currency)
 
 @dp.message(defs.Currency.currency)
 async def currency(message: defs.types.Message, state: defs.FSMContext):
+    try:
+        await message.delete()
+        await message.delete()
+    except Exception:
+        pass
     await state.update_data(currency = message.text.upper())
     data = await state.get_data()
     global CURRENCY
@@ -48,11 +63,16 @@ async def currency(message: defs.types.Message, state: defs.FSMContext):
 
 
 
-@dp.callback_query(lambda c: c.data == "about bot")
+@dp.callback_query(defs.F.data == "about bot")
 async def about_bot(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'About bot - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
-    await callback_query.message.edit_text('''<b>**ABOUT BOT**</b>
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
+
+    await callback_query.message.answer('''<b>**ABOUT BOT**</b>
 I'm bot of popular "NN device shop". You can ask me questions about different keyboard modals we sell.
 Also you can find our site or see information, price and characteristics of different keyboards and computer mice that we sell.''',
     parse_mode="HTML", reply_markup=defs.main_menu())
@@ -60,11 +80,15 @@ Also you can find our site or see information, price and characteristics of diff
 
 
 
-@dp.callback_query(lambda c: c.data == "about shop")
+@dp.callback_query(defs.F.data == "about shop")
 async def about_shop(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'About shop - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
-    await callback_query.message.edit_text('''<b>**ABOUT SHOP**</b>
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
+    await callback_query.message.answer('''<b>**ABOUT SHOP**</b>
 "NN device shop" is well-known internet shop of different top devices. Did you had this situation:
 <b>You need cool, comfortable device to play your lovely video games or work comfortably, but you don't have much money.</b>
 We think, everyone saw themselves there. So, our shop is good variant for you.''', parse_mode = "HTML", reply_markup=defs.main_menu())
@@ -72,153 +96,234 @@ We think, everyone saw themselves there. So, our shop is good variant for you.''
 
 
 
-@dp.callback_query(lambda c: c.data == "brands")
+@dp.callback_query(defs.F.data == "brands")
 async def brands(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'Brands - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
+    print(callback_query.data)
 
-    global USER_PATH
-    USER_PATH[callback_query.from_user.id].append("brands")
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
 
-    await callback_query.message.edit_text(f'''<b>***Brands***</b>''', parse_mode="HTML", reply_markup=defs.mice_and_keyboards())
+    pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\ChatGPT Image Nov 3, 2025, 02_17_53 PM.png")
+    await bot.send_photo(
+        chat_id=callback_query.from_user.id,
+        caption = "<b>Choose a brand:</b>",
+        parse_mode="HTML",
+        photo=pic,
+        reply_markup=defs.mice_and_keyboards()
+    )
     await callback_query.answer()
 
 
 
 
-@dp.callback_query(lambda c: c.data in ["wooting", "wlmouse", "atk"])
+@dp.callback_query(defs.F.data.in_(["scyrox", "wlmouse", "atk", "finalmouse", "esp tiger"]))
 async def devices(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'{callback_query.data} - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
-    global USER_PATH
     global BRAND
-    USER_PATH[callback_query.from_user.id].append(callback_query.data)
 
     BRAND = callback_query.data
-    await callback_query.message.edit_text(f"<b>**{callback_query.data.upper()}**</b>", parse_mode="HTML", reply_markup=defs.list_of_devices())
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
+
+    pic = {
+        "scyrox": r"C:\Users\khajj\OneDrive\Desktop\PM project\c_Yau5JE_400x400.jpg",
+        "wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\wlmouse-logo.webp",
+        "atk": r"C:\Users\khajj\OneDrive\Desktop\PM project\images.png",
+        "finalmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\800.webp",
+        "esp tiger": r"C:\Users\khajj\OneDrive\Desktop\PM project\ESPTIGER_logo_large.png"
+        }
+
+    pic_path = pic.get(BRAND)
+
+    await bot.send_photo(
+        chat_id = callback_query.from_user.id,
+        caption = f"<b>**{BRAND.upper()}**</b>",
+        parse_mode="HTML",
+        photo = defs.FSInputFile(pic_path),
+        reply_markup=defs.list_of_devices()
+    )
     await callback_query.answer()
 
 
 
-@dp.callback_query(lambda c: c.data == "mice")
-async def mice(callback_query: defs.types.CallbackQuery):
+@dp.callback_query(defs.F.data == "mice")
+async def mice_selection(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'Mice - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
-    global USER_PATH
-    USER_PATH[callback_query.from_user.id].append("mice")
 
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
+
+    banners = {
+        "wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse mice.png",
+        "scyrox": r""
+    }
+    banner_path = banners.get(BRAND)
     keyboard = defs.get_mouse_by_brand(BRAND)
-    USER_PATH[callback_query.from_user.id].append(BRAND)
-    await callback_query.message.answer(f"<b>**{BRAND.upper()}**\n*MICE*</b>", parse_mode="HTML", reply_markup=keyboard)
+    await bot.send_photo(
+        chat_id = callback_query.from_user.id,
+        caption = f"<b>**{BRAND.upper()}**\n*MICE*</b>",
+        photo = defs.FSInputFile(banner_path),
+        parse_mode = "HTML",
+        reply_markup = keyboard)
 
 
 
-@dp.callback_query(lambda c: c.data == "keyboards")
-async def keyboards(callback_query: defs.types.CallbackQuery):
+@dp.callback_query(defs.F.data == "keyboards")
+async def keyboards_selection(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'Keyboards - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
-    global USER_PATH
-    USER_PATH[callback_query.from_user.id].append("keyboards")
 
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
     keyboard = defs.get_keyboard_by_brand(BRAND)
-    USER_PATH[callback_query.from_user.id].append(BRAND)
-    await callback_query.message.answer(f"<b>**{BRAND.upper()}**\n*KEYBOARD*</b>", parse_mode="HTML", reply_markup=keyboard)
+    await callback_query.message.answer(f"<b>**{BRAND.upper()}**\n*KEYBOARDS*</b>", parse_mode="HTML", reply_markup=keyboard)
 
 
-@dp.callback_query(lambda c: c.data in ["WLmouse beast X Max"])
+
+@dp.callback_query(defs.F.data == "mousepads")
+async def mousepads_selection(callback_query: defs.types.CallbackQuery):
+    defs.logging.info(f'Mousepads - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
+
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
+    keyboard = defs.get_mousepad_by_brand(BRAND)
+    await callback_query.message.answer(f"<b>**{BRAND.upper()}**\n*MOUSEPADS*</b>", parse_mode="HTML", reply_markup=keyboard)
+
+
+
+@dp.callback_query(defs.F.data.in_(["WLmouse beast X Max", "WLmouse Strider", "ATK Blazing Sky F1", "Scyrox V6", "Finalmouse ULX Prophecy"]))
 async def mice(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'{callback_query.data} - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
-    global USER_PATH
-    USER_PATH[callback_query.from_user.id].append(callback_query.data)
+    global BRAND
 
-    text, keyboard = defs.models_of_mouse(callback_query.data)
-    model = callback_query.data
-    if model == "WLmouse beast X Max":
-        pic = defs.FSInputFile("C:/Users/khajj/OneDrive/Desktop/PM project/max-red.webp")
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
 
-    await callback_query.message.answer_photo(
-        photo = pic,
-        caption = f"<b>**{model.upper()}**</b>\n{text}",
-        reply_markup=keyboard,
-        parse_mode="HTML")
+    price = await defs.convertation("mouse", CURRENCY, BRAND, callback_query.data)
+
+    text, keyboard = defs.models_of_mouse(callback_query.data, price, CURRENCY)
+    pic = {
+        "WLmouse beast X Max" : r"C:\Users\khajj\OneDrive\Desktop\PM project\max-red.webp",
+        "WLmouse Strider" : r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse Strider.png",
+        "ATK Blazing Sky F1" : r"C:\Users\khajj\OneDrive\Desktop\PM project\ATK Blazing Sky F1.webp",
+        "Scyrox V6" : r"C:\Users\khajj\OneDrive\Desktop\PM project\V6.png",
+        "Finalmouse ULX Prophecy" : r"C:\Users\khajj\OneDrive\Desktop\PM project\tfuewebsite1.webp"}
+
+    pic_path = pic.get(callback_query.data)
+
+    if pic_path and defs.os.path.exists(pic_path):
+        photo = defs.FSInputFile(pic_path)
+        await bot.send_photo(
+            chat_id=callback_query.from_user.id,
+            photo=photo,
+            caption=f"<b>**{callback_query.data.upper()}**</b>\n{text}",
+            reply_markup=keyboard,
+            parse_mode="HTML"
+        )
+    else:
+        await callback_query.message.answer("Error", reply_markup=keyboard)
 
 
 
-@dp.callback_query(lambda c: c.data in ["wlmouse ying75"])
-async def keyboard(callback_query: defs.types.CallbackQuery):
+@dp.callback_query(defs.F.data.in_(["wlmouse ying75"]))
+async def keyboards(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'{callback_query.data} - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
     global CURRENCY
-    global USER_PATH
-    USER_PATH[callback_query.from_user.id].append(callback_query.data)
 
-    price = await defs.convertation(CURRENCY, callback_query.data)
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
+
+    price = await defs.convertation(CURRENCY, BRAND, callback_query.data)
 
     text, keyboard = defs.models_of_keyboards(callback_query.data, price, CURRENCY)
-    model = callback_query.data
+    pic = {
+        "wlmouse ying75": r"C:\Users\khajj\OneDrive\Desktop\PM project\25455-26VTN-WLMOUSE-Ying75-Keyboard"
+    }
 
-    if model == "wlmouse ying75":
-        pic = "https://mechanicalkeyboards.com/cdn/shop/files/25455-26VTN-WLMOUSE-Ying75-Keyboard.jpg?v=1749633789&width=750"
+    pic_path = pic.get(callback_query.data)
 
-    await callback_query.message.answer_photo(
-        photo = pic,
-        caption = f"<b>**{model.upper()}**</b>\n{text}",
-        reply_markup=keyboard,
-        parse_mode="HTML")
+    if pic_path and defs.os.path.exists(pic_path):
+        photo = defs.FSInputFile(pic_path)
+        await bot.send_photo(
+            chat_id=callback_query.from_user.id,
+            photo=photo,
+            caption=f"<b>**{callback_query.data.upper()}**</b>\n{text}",
+            reply_markup=keyboard,
+            parse_mode="HTML"
+        )
+    else:
+        await callback_query.message.answer("Error", reply_markup=keyboard)
 
 
 
-@dp.callback_query(lambda c: c.data == "back_to_menu")
+@dp.callback_query(defs.F.data.in_(["WLmouse Jumi Gaming", "WLmouse Meow Gaming", "ESP TIGER PIONEER Wu Xiang"]))
+async def mousepads(callback_query: defs.types.CallbackQuery):
+    defs.logging.info(f'{callback_query.data} - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
+
+    global CURRENCY
+
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
+    try:
+        price = await defs.convertation("mousepad", CURRENCY, BRAND, callback_query.data)
+    except Exception as e:
+        await callback_query.message.answer(f"Error: {e}")
+        return
+
+    text, keyboard = defs.models_of_mousepad(callback_query.data, price, CURRENCY)
+
+    pic = {
+        "WLmouse Jumi Gaming": r"C:\Users\khajj\OneDrive\Desktop\PM project\wlmouse_jumi_gaming_mouse_pad_ac91240_97896.webp",
+        "WLmouse Meow Gaming": r"C:\Users\khajj\OneDrive\Desktop\PM project\2_939f53bb-82f8-4b68-bbf1-71a0a1956101.webp",
+        "ESP TIGER PIONEER Wu Xiang": r"C:\Users\khajj\OneDrive\Desktop\PM project\ESPTIGER_PIONEER_WUXIANG_WATER_RESISTANCE_GAMING_MOUSEPAD_1.webp"
+    }
+
+    print(f"callback_query.data = '{callback_query.data}'")
+    print(f"Available keys = {list(pic.keys())}")
+
+    pic_path = pic.get(callback_query.data)
+    if pic_path and defs.os.path.exists(pic_path):
+        photo = defs.FSInputFile(pic_path)
+        await bot.send_photo(
+            chat_id=callback_query.from_user.id,
+            photo=photo,
+            caption=f"<b>**{callback_query.data.upper()}**</b>\n{text}",
+            reply_markup=keyboard,
+            parse_mode="HTML"
+        )
+    else:
+        await callback_query.message.answer("Error", reply_markup=keyboard)
+
+
+
+@dp.callback_query(defs.F.data == "back_to_menu")
 async def back_to_menu(callback_query: defs.types.CallbackQuery):
-    user_id = callback_query.from_user.id
-    USER_PATH[user_id] = ["main"]
     defs.logging.info(f'Back to menu - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
-    await callback_query.message.delete()
+    try:
+        await callback_query.message.delete()
+    except Exception:
+        pass
     await send_hello(callback_query.message)
-
-
-
-@dp.callback_query(lambda c: c.data == "back")
-async def back(callback_query: defs.types.CallbackQuery):
-    global USER_PATH
-    global BRAND
-
-    defs.logging.info(f'Back - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
-
-    user_id = callback_query.from_user.id
-    path = USER_PATH.get(user_id, ["main"])
-
-    if len(path) > 1:
-        path.pop()
-    USER_PATH[user_id] = path
-
-    prev_level = path[-1]
-
-    if prev_level == "main":
-        await callback_query.message.answer(text = "<b>**MAIN MENU**</b>", parse_mode = "HTML", reply_markup = defs.main_menu())
-
-    elif prev_level == "brands":
-        await brands(callback_query)
-        await callback_query.answer()
-
-    elif prev_level in ["wooting", "wlmouse", "atk"]:
-        await devices(callback_query)
-        await callback_query.answer()
-
-    elif prev_level == "mice":
-        await mice(callback_query)
-        await callback_query.answer()
-
-    elif prev_level == "keyboards":
-        await keyboards(callback_query)
-        await callback_query.answer()
-
-    elif prev_level in ["WLmouse beast X Max"]:
-        await mice(callback_query)
-        await callback_query.answer()
-
-    elif prev_level in ["wlmouse ying75"]:
-        await keyboard(callback_query)
-        await callback_query.answer()
 
 
 
@@ -232,16 +337,28 @@ async def global_error_handler(error: defs.ErrorEvent):
 
     if isinstance(error.exception, defs.TelegramAPIError):
         defs.logging.error(f"Telegram error: {error.exception}")
-        await error.update.message.answer(
-            f"<b>Telegram error⚠️</b>: {error.exception}",
-            parse_mode="HTML"
-        )
+        try:
+            await error.update.message.answer(
+                f"<b>Telegram error⚠️</b>: {error.exception}",
+                parse_mode="HTML"
+            )
+        except Exception:
+            await error.update.callback_query.message.answer(
+                f"<b>Telegram error⚠️</b>: {error.exception}",
+                parse_mode="HTML"
+            )
     else:
-        defs.logging.error(f"Something went wrong: {error.exception}")
-        await error.update.message.answer(
-            "<b>Something went wrong⚙️...Try again later⏳</b>",
-            parse_mode="HTML"
-        )
+        try:
+            defs.logging.error(f"Something went wrong: {error.exception}")
+            await error.update.message.answer(
+                "<b>Something went wrong⚙️...Try again later⏳</b>",
+                parse_mode="HTML"
+            )
+        except Exception:
+            await error.update.callback_query.message.answer(
+                "<b>Something went wrong⚙️...Try again later⏳</b>",
+                parse_mode="HTML"
+            )
 
 
 async def main():

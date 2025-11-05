@@ -122,6 +122,7 @@ async def brands(callback_query: defs.types.CallbackQuery):
 @dp.callback_query(defs.F.data.in_(["scyrox", "wlmouse", "atk", "finalmouse", "esp tiger"]))
 async def devices(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'{callback_query.data} - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
+    print(f"[DEBUG] devices() triggered! data = {callback_query.data}")
 
     global BRAND
 
@@ -146,7 +147,7 @@ async def devices(callback_query: defs.types.CallbackQuery):
         caption = f"<b>**{BRAND.upper()}**</b>",
         parse_mode="HTML",
         photo = defs.FSInputFile(pic_path),
-        reply_markup=defs.list_of_devices()
+        reply_markup=defs.list_of_devices(BRAND)
     )
     await callback_query.answer()
 
@@ -162,8 +163,11 @@ async def mice_selection(callback_query: defs.types.CallbackQuery):
         pass
 
     banners = {
-        "wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse mice.png",
-        "scyrox": r""
+        "wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse mouse.jpg",
+        "scyrox": r"C:\Users\khajj\OneDrive\Desktop\PM project\SCYROX mouse.jpg",
+        "atk": r"C:\Users\khajj\OneDrive\Desktop\PM project\ATK GG.jpg",
+        "finalmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\finalmouse mice.jpg",
+        "esp tiger": r""
     }
     banner_path = banners.get(BRAND)
     keyboard = defs.get_mouse_by_brand(BRAND)
@@ -250,7 +254,7 @@ async def keyboards(callback_query: defs.types.CallbackQuery):
     except Exception:
         pass
 
-    price = await defs.convertation(CURRENCY, BRAND, callback_query.data)
+    price = await defs.convertation("keyboards", CURRENCY, BRAND, callback_query.data)
 
     text, keyboard = defs.models_of_keyboards(callback_query.data, price, CURRENCY)
     pic = {

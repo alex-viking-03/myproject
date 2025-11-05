@@ -4,7 +4,7 @@ from datetime import datetime
 
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
-import Prices
+from Prices import devices
 
 import aiohttp
 import logging
@@ -59,11 +59,11 @@ async def save_price(currency, first_price):
 async def convertation(device, currency, brand, model):
 
     if device == "keyboard":
-        price = await save_price(currency, Prices.Keyboards[brand][model])
+        price = await save_price(currency, devices.Keyboards[brand][model])
     elif device == "mouse":
-        price = await save_price(currency, Prices.Mice[brand][model])
+        price = await save_price(currency, devices.Mice[brand][model])
     else:
-        price = await save_price(currency, Prices.Mousepads[brand][model])
+        price = await save_price(currency, devices.Mousepads[brand][model])
     return price
 
 
@@ -83,15 +83,24 @@ def get_keyboard_by_brand(brand):
         )
 
 
-def list_of_devices():
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="Keyboards", callback_data="keyboards")],
-            [InlineKeyboardButton(text="Mice", callback_data="mice")],
-            [InlineKeyboardButton(text="Mousepads", callback_data="mousepads")],
-            [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data="brands")]
-        ]
+def list_of_devices(brand):
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[]
     )
+    print(f"[DEBUG] brand = {brand}")
+    print(f"[DEBUG] Prices.devices keys = {list(devices.keys())}")
+
+    for category, brands in devices.items():
+        print(f"[DEBUG] category = {category}, brands = {list(brands.keys())}")
+        if brand in brands:
+            print(f"[DEBUG] ✅ FOUND: {brand} in {category}")
+            keyboard.add(InlineKeyboardButton(text=category.upper(), callback_data=category.lower()))
+        else:
+
+            print(f"[DEBUG] ❌ NOT FOUND: {brand} in {category}")
+
+    keyboard.add(InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data=brand))
+    return keyboard
 
 
 def models_of_keyboards(model, price, currency):

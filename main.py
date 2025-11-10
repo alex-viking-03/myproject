@@ -41,7 +41,7 @@ async def change_currency(callback_query: defs.types.CallbackQuery, state: defs.
 
     pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\currency.png")
     await callback_query.message.answer_photo(pic,
-        caption = "<b>Select one of the following currencies:</b>\nKZT\nRUB\nUSD",
+        caption = "<b>Enter name of currency except to ISO 4217</b>\n\nP.S.:you can find information about this in internet",
         parse_mode = "HTML")
     await state.set_state(defs.Currency.currency)
 
@@ -52,12 +52,19 @@ async def currency(message: defs.types.Message, state: defs.FSMContext):
         await message.delete()
     except Exception:
         pass
+
     await state.update_data(currency = message.text.upper())
     data = await state.get_data()
     global CURRENCY
     CURRENCY = data["currency"]
-    await message.answer(f"Currency: {CURRENCY}")
-    await send_hello(message)
+    check = await defs.save_price(CURRENCY, 10000)
+
+    if str(check).isdigit():
+        await message.answer(f"Currency: {CURRENCY}")
+        await send_hello(message)
+    else:
+        await message.answer(f"Wrong name of currency: {check}\n\nCurrency didn't change")
+        await send_hello(message)
 
 
 
@@ -232,6 +239,10 @@ async def mice(callback_query: defs.types.CallbackQuery):
     price = await defs.convertation("mouse", CURRENCY, BRAND, callback_query.data)
 
     text, keyboard = defs.models_of_mouse(callback_query.data, price, CURRENCY)
+
+    if "Something went wrong" in text:
+        await callback_query.message.answer(text, reply_markup=keyboard)
+
     pics = {
         "WLmouse beast X Max" : r"C:\Users\khajj\OneDrive\Desktop\PM project\max-red.webp",
         "WLmouse Strider" : r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse Strider.png",

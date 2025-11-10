@@ -4,6 +4,8 @@ from datetime import datetime
 
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
+from pydantic_core.core_schema import none_schema
+
 from Prices import devices
 
 import aiohttp
@@ -54,14 +56,16 @@ async def fetch_data(url: str, data_type: str):
 async def save_price(currency, first_price):
     url = "https://api.fxratesapi.com/latest"
     data = await fetch_data(url, "Convertation")
-
-    if currency == "USD":
-        price = first_price // data["rates"]["KZT"]
-    elif currency == "RUB":
-        price = first_price // data["rates"]["KZT"] * data["rates"]["RUB"]
-    elif currency == "KZT":
-        price = first_price
-    return math.ceil(price)
+    try:
+        if currency == "USD":
+            price = first_price // data["rates"]["KZT"]
+        elif currency == "KZT":
+            price = first_price
+        else:
+            price = first_price // data["rates"]["KZT"] * data["rates"][currency]
+        return math.ceil(price)
+    except Exception as e:
+        return str(e)
 
 async def convertation(device, currency, brand, model):
     global DATA
@@ -106,15 +110,21 @@ def list_of_devices(brand):
 
 def models_of_keyboards(model, price, currency):
     global DATA
-    if model == "wlmouse ying75":
-        data = DATA["Keyboards"]["wlmouse"]["wlmouse ying75"]["description"]
-        text = data.format(price=price, currency=currency)
+    if price.isalpha():
+        if model == "wlmouse ying75":
+            data = DATA["Keyboards"]["wlmouse"]["wlmouse ying75"]["description"]
+            text = data.format(price=price, currency=currency)
+
+    else:
+        text = "Wrong format of currency"
+
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu")],
         ]
     )
     return text, keyboard
+
 
 
 # Выбор модели для мышек

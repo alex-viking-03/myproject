@@ -110,13 +110,9 @@ def list_of_devices(brand):
 
 def models_of_keyboards(model, price, currency):
     global DATA
-    if price.isalpha():
-        if model == "wlmouse ying75":
-            data = DATA["Keyboards"]["wlmouse"]["wlmouse ying75"]["description"]
-            text = data.format(price=price, currency=currency)
-
-    else:
-        text = "Wrong format of currency"
+    if model == "wlmouse ying75":
+        data = DATA["Keyboards"]["wlmouse"]["wlmouse ying75"]["description"]
+        text = data.format(price=price, currency=currency)
 
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[

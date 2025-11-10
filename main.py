@@ -23,8 +23,10 @@ async def send_hello(message: defs.types.Message):
 Here you can buy the best devices from different manufacturers:</b>
 
 -WLmouse
--Wooting
+-Finalmouse
 -ATK
+-ESP TIGER
+-Scyrox
 
 Do you wanna know more?\n\n<b>***MAIN MENU***</b>''', reply_markup = defs.main_menu(), parse_mode="HTML")
 
@@ -38,11 +40,9 @@ async def change_currency(callback_query: defs.types.CallbackQuery, state: defs.
         pass
 
     pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\currency.png")
-    await bot.send_photo(
-        chat_id = callback_query.from_user.id,
+    await callback_query.message.answer_photo(pic,
         caption = "<b>Select one of the following currencies:</b>\nKZT\nRUB\nUSD",
-        parse_mode = "HTML",
-        photo = pic)
+        parse_mode = "HTML")
     await state.set_state(defs.Currency.currency)
 
 @dp.message(defs.Currency.currency)
@@ -71,7 +71,7 @@ async def about_bot(callback_query: defs.types.CallbackQuery):
         pass
 
     await callback_query.message.answer('''<b>**ABOUT BOT**</b>
-I'm bot of popular "NN device shop". You can ask me questions about different keyboard modals we sell.
+I'm bot of popular "Hiru shop". You can ask me questions about different keyboard modals we sell.
 Also you can find our site or see information, price and characteristics of different keyboards and computer mice that we sell.''',
     parse_mode="HTML", reply_markup=defs.main_menu())
     await callback_query.answer()
@@ -87,7 +87,7 @@ async def about_shop(callback_query: defs.types.CallbackQuery):
     except Exception:
         pass
     await callback_query.message.answer('''<b>**ABOUT SHOP**</b>
-"NN device shop" is well-known internet shop of different top devices. Did you had this situation:
+"Hiru shop" is well-known internet shop of different top devices. Did you had this situation:
 <b>You need cool, comfortable device to play your lovely video games or work comfortably, but you don't have much money.</b>
 We think, everyone saw themselves there. So, our shop is good variant for you.''', parse_mode = "HTML", reply_markup=defs.main_menu())
     await callback_query.answer()
@@ -105,11 +105,10 @@ async def brands(callback_query: defs.types.CallbackQuery):
         pass
 
     pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\ChatGPT Image Nov 3, 2025, 02_17_53 PM.png")
-    await bot.send_photo(
-        chat_id=callback_query.from_user.id,
+
+    await callback_query.message.answer_photo(pic,
         caption = "<b>Choose a brand:</b>",
         parse_mode="HTML",
-        photo=pic,
         reply_markup=defs.mice_and_keyboards()
     )
     await callback_query.answer()
@@ -130,7 +129,7 @@ async def devices(callback_query: defs.types.CallbackQuery):
     except Exception:
         pass
 
-    pic = {
+    pics = {
         "scyrox": r"C:\Users\khajj\OneDrive\Desktop\PM project\c_Yau5JE_400x400.jpg",
         "wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\wlmouse-logo.webp",
         "atk": r"C:\Users\khajj\OneDrive\Desktop\PM project\images.png",
@@ -138,13 +137,11 @@ async def devices(callback_query: defs.types.CallbackQuery):
         "esp tiger": r"C:\Users\khajj\OneDrive\Desktop\PM project\ESPTIGER_logo_large.png"
         }
 
-    pic_path = pic.get(BRAND)
+    pic = defs.FSInputFile(pics.get(BRAND))
 
-    await bot.send_photo(
-        chat_id = callback_query.from_user.id,
+    await callback_query.message.answer_photo(pic,
         caption = f"<b>**{BRAND.upper()}**</b>",
         parse_mode="HTML",
-        photo = defs.FSInputFile(pic_path),
         reply_markup=defs.list_of_devices(BRAND)
     )
     await callback_query.answer()
@@ -166,12 +163,11 @@ async def mice_selection(callback_query: defs.types.CallbackQuery):
         "atk": r"C:\Users\khajj\OneDrive\Desktop\PM project\ATK GG.jpg",
         "finalmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\finalmouse mice.jpg"
     }
-    banner_path = banners.get(BRAND)
+    banner = defs.FSInputFile(banners.get(BRAND))
     keyboard = defs.get_mouse_by_brand(BRAND)
-    await bot.send_photo(
-        chat_id = callback_query.from_user.id,
+
+    await callback_query.message.answer_photo(banner,
         caption = f"<b>**{BRAND.upper()}**\n*MICE*</b>",
-        photo = defs.FSInputFile(banner_path),
         parse_mode = "HTML",
         reply_markup = keyboard)
 
@@ -186,13 +182,12 @@ async def keyboards_selection(callback_query: defs.types.CallbackQuery):
     except Exception:
         pass
     keyboard = defs.get_keyboard_by_brand(BRAND)
-    pic = {"wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse Keyboard.jpg"}
-    pic_path = pic.get(BRAND)
-    if pic_path:
-        await bot.send_photo(
-            chat_id = callback_query.from_user.id,
+    pics = {"wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse Keyboard.jpg"}
+    pic = defs.FSInputFile(pics.get(BRAND))
+
+    if pic:
+        await callback_query.message.answer_photo(pic,
             caption = f"<b>**{BRAND.upper()}**\n*KEYBOARDS*</b>",
-            photo = defs.FSInputFile(pic_path),
             parse_mode="HTML",
             reply_markup=keyboard)
     else:
@@ -211,15 +206,15 @@ async def mousepads_selection(callback_query: defs.types.CallbackQuery):
     keyboard = defs.get_mousepad_by_brand(BRAND)
 
     pics = {"wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse mousepad.jpg"}
-    pic_path = pics.get(BRAND)
+    pic = defs.FSInputFile(pics.get(BRAND))
 
-    if pic_path:
-        await bot.send_photo(
-            chat_id = callback_query.from_user.id,
+    if pic:
+        await callback_query.message.answer_photo(pic,
             caption = "<b>**{BRAND.upper()}**\n*MOUSEPADS*</b>",
-            photo = defs.FSInputFile(pic_path),
             parse_mode="HTML",
             reply_markup=keyboard)
+    else:
+        defs.logging.error("Error - Wrong repository")
 
 
 
@@ -237,25 +232,23 @@ async def mice(callback_query: defs.types.CallbackQuery):
     price = await defs.convertation("mouse", CURRENCY, BRAND, callback_query.data)
 
     text, keyboard = defs.models_of_mouse(callback_query.data, price, CURRENCY)
-    pic = {
+    pics = {
         "WLmouse beast X Max" : r"C:\Users\khajj\OneDrive\Desktop\PM project\max-red.webp",
         "WLmouse Strider" : r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse Strider.png",
         "ATK Blazing Sky F1" : r"C:\Users\khajj\OneDrive\Desktop\PM project\ATK Blazing Sky F1.webp",
         "Scyrox V6" : r"C:\Users\khajj\OneDrive\Desktop\PM project\V6.png",
         "Finalmouse ULX Prophecy" : r"C:\Users\khajj\OneDrive\Desktop\PM project\tfuewebsite1.webp"}
 
-    pic_path = pic.get(callback_query.data)
+    pic = defs.FSInputFile(pics.get(callback_query.data))
 
-    if pic_path and defs.os.path.exists(pic_path):
-        photo = defs.FSInputFile(pic_path)
-        await bot.send_photo(
-            chat_id=callback_query.from_user.id,
-            photo=photo,
+    if pic and defs.os.path.exists(pics.get(callback_query.data)):
+        await callback_query.message.answer_photo(pic,
             caption=f"<b>**{callback_query.data.upper()}**</b>\n{text}",
             reply_markup=keyboard,
             parse_mode="HTML"
         )
     else:
+        defs.logging.error("Error - Wrong repository")
         await callback_query.message.answer("Error", reply_markup=keyboard)
 
 
@@ -274,22 +267,20 @@ async def keyboards(callback_query: defs.types.CallbackQuery):
     price = await defs.convertation("keyboards", CURRENCY, BRAND, callback_query.data)
 
     text, keyboard = defs.models_of_keyboards(callback_query.data, price, CURRENCY)
-    pic = {
+    pics = {
         "wlmouse ying75": r"C:\Users\khajj\OneDrive\Desktop\PM project\25455-26VTN-WLMOUSE-Ying75-Keyboard.webp"
     }
 
-    pic_path = pic.get(callback_query.data)
+    pic = defs.FSInputFile(pics.get(callback_query.data))
 
-    if pic_path and defs.os.path.exists(pic_path):
-        photo = defs.FSInputFile(pic_path)
-        await bot.send_photo(
-            chat_id=callback_query.from_user.id,
-            photo=photo,
+    if pic and defs.os.path.exists(pics.get(callback_query.data)):
+        await callback_query.message.answer_photo(pic,
             caption=f"<b>**{callback_query.data.upper()}**</b>\n{text}",
             reply_markup=keyboard,
             parse_mode="HTML"
         )
     else:
+        defs.logging.error("Error - Wrong repository")
         await callback_query.message.answer("Error", reply_markup=keyboard)
 
 
@@ -312,21 +303,18 @@ async def mousepads(callback_query: defs.types.CallbackQuery):
 
     text, keyboard = defs.models_of_mousepad(callback_query.data, price, CURRENCY)
 
-    pic = {
+    pics = {
         "WLmouse Jumi Gaming": r"C:\Users\khajj\OneDrive\Desktop\PM project\wlmouse_jumi_gaming_mouse_pad_ac91240_97896.webp",
         "WLmouse Meow Gaming": r"C:\Users\khajj\OneDrive\Desktop\PM project\2_939f53bb-82f8-4b68-bbf1-71a0a1956101.webp",
         "ESP TIGER PIONEER Wu Xiang": r"C:\Users\khajj\OneDrive\Desktop\PM project\ESPTIGER_PIONEER_WUXIANG_WATER_RESISTANCE_GAMING_MOUSEPAD_1.webp"
     }
 
     print(f"callback_query.data = '{callback_query.data}'")
-    print(f"Available keys = {list(pic.keys())}")
+    print(f"Available keys = {list(pics.keys())}")
 
-    pic_path = pic.get(callback_query.data)
-    if pic_path and defs.os.path.exists(pic_path):
-        photo = defs.FSInputFile(pic_path)
-        await bot.send_photo(
-            chat_id=callback_query.from_user.id,
-            photo=photo,
+    pic = defs.FSInputFile(pics.get(callback_query.data))
+    if pic and defs.os.path.exists(pics.get(callback_query.data)):
+        await callback_query.message.answer_photo(pic,
             caption=f"<b>**{callback_query.data.upper()}**</b>\n{text}",
             reply_markup=keyboard,
             parse_mode="HTML"

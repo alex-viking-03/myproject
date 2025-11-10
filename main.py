@@ -1,5 +1,3 @@
-from aiogram.types import FSInputFile
-
 import defs
 
 defs.load_dotenv()
@@ -166,8 +164,7 @@ async def mice_selection(callback_query: defs.types.CallbackQuery):
         "wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse mouse.jpg",
         "scyrox": r"C:\Users\khajj\OneDrive\Desktop\PM project\SCYROX mouse.jpg",
         "atk": r"C:\Users\khajj\OneDrive\Desktop\PM project\ATK GG.jpg",
-        "finalmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\finalmouse mice.jpg",
-        "esp tiger": r""
+        "finalmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\finalmouse mice.jpg"
     }
     banner_path = banners.get(BRAND)
     keyboard = defs.get_mouse_by_brand(BRAND)
@@ -189,7 +186,17 @@ async def keyboards_selection(callback_query: defs.types.CallbackQuery):
     except Exception:
         pass
     keyboard = defs.get_keyboard_by_brand(BRAND)
-    await callback_query.message.answer(f"<b>**{BRAND.upper()}**\n*KEYBOARDS*</b>", parse_mode="HTML", reply_markup=keyboard)
+    pic = {"wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse Keyboard.jpg"}
+    pic_path = pic.get(BRAND)
+    if pic_path:
+        await bot.send_photo(
+            chat_id = callback_query.from_user.id,
+            caption = f"<b>**{BRAND.upper()}**\n*KEYBOARDS*</b>",
+            photo = defs.FSInputFile(pic_path),
+            parse_mode="HTML",
+            reply_markup=keyboard)
+    else:
+        defs.logging.error("Error - Wrong repository")
 
 
 
@@ -202,7 +209,17 @@ async def mousepads_selection(callback_query: defs.types.CallbackQuery):
     except Exception:
         pass
     keyboard = defs.get_mousepad_by_brand(BRAND)
-    await callback_query.message.answer(f"<b>**{BRAND.upper()}**\n*MOUSEPADS*</b>", parse_mode="HTML", reply_markup=keyboard)
+
+    pics = {"wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse mousepad.jpg"}
+    pic_path = pics.get(BRAND)
+
+    if pic_path:
+        await bot.send_photo(
+            chat_id = callback_query.from_user.id,
+            caption = "<b>**{BRAND.upper()}**\n*MOUSEPADS*</b>",
+            photo = defs.FSInputFile(pic_path),
+            parse_mode="HTML",
+            reply_markup=keyboard)
 
 
 
@@ -258,7 +275,7 @@ async def keyboards(callback_query: defs.types.CallbackQuery):
 
     text, keyboard = defs.models_of_keyboards(callback_query.data, price, CURRENCY)
     pic = {
-        "wlmouse ying75": r"C:\Users\khajj\OneDrive\Desktop\PM project\25455-26VTN-WLMOUSE-Ying75-Keyboard"
+        "wlmouse ying75": r"C:\Users\khajj\OneDrive\Desktop\PM project\25455-26VTN-WLMOUSE-Ying75-Keyboard.webp"
     }
 
     pic_path = pic.get(callback_query.data)

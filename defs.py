@@ -20,6 +20,13 @@ from aiogram.types import ErrorEvent
 from aiogram.exceptions import TelegramAPIError
 
 import math
+import json
+
+
+
+with open(".idea/devices.json", "r", encoding="utf-8") as file:
+        DATA = json.load(file)
+
 
 
 class Currency(StatesGroup):
@@ -57,14 +64,15 @@ async def save_price(currency, first_price):
     return math.ceil(price)
 
 async def convertation(device, currency, brand, model):
-
-    if device == "keyboard":
-        price = await save_price(currency, devices.Keyboards[brand][model])
+    global DATA
+    if device == "keyboards":
+        price = await save_price(currency, DATA["Keyboards"][brand][model]["price"])
     elif device == "mouse":
-        price = await save_price(currency, devices.Mice[brand][model])
+        price = await save_price(currency, DATA["Mice"][brand][model]["price"])
     else:
-        price = await save_price(currency, devices.Mousepads[brand][model])
+        price = await save_price(currency, DATA["Mousepads"][brand][model]["price"])
     return price
+
 
 
 def get_keyboard_by_brand(brand):
@@ -84,40 +92,23 @@ def get_keyboard_by_brand(brand):
 
 
 def list_of_devices(brand):
-    keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[]
-    )
-    print(f"[DEBUG] brand = {brand}")
-    print(f"[DEBUG] Prices.devices keys = {list(devices.keys())}")
+    buttons = []
 
-    for category, brands in devices.items():
-        print(f"[DEBUG] category = {category}, brands = {list(brands.keys())}")
+    for category, brands in DATA.items():
         if brand in brands:
-            print(f"[DEBUG] ✅ FOUND: {brand} in {category}")
-            keyboard.add(InlineKeyboardButton(text=category.upper(), callback_data=category.lower()))
+            buttons.append([InlineKeyboardButton(text=category.upper(), callback_data=category.lower())])
         else:
-
             print(f"[DEBUG] ❌ NOT FOUND: {brand} in {category}")
 
-    keyboard.add(InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data=brand))
-    return keyboard
+    buttons.append([InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data='brands')])
+    return InlineKeyboardMarkup(inline_keyboard = buttons)
 
 
 def models_of_keyboards(model, price, currency):
+    global DATA
     if model == "wlmouse ying75":
-        text = (f"<b>Price💰:</b> {price} {currency}\n"
-                "<b>Layout:</b> 75% (84 keys)\n"
-                "<b>Material:</b> Forged Carbon\n"
-                "<b>Connection:</b> Wired USB Type-C\n"
-                "<b>Damping:</b> Poron Sandwich Foam + Poron Bottom Foam\n"
-                "<b>Mounting Structure:</b> Gasket-Mounted\n"
-                "<b>PCB Plate:</b> Aluminum\n"
-                "<b>Lighting:</b> Full RGB Underglow\n"
-                "<b>RT Precision:</b> Up to 0.005mm\n"
-                "<b>Scan Rate:</b> Full-Key 32K\n"
-                "<b>Polling Rate:</b> 125-8000Hz (Customizable), 0.125s Ultra-Low Latency\n"
-                "<b>Keycaps:</b> Frosted Transparent PC & Side-Engraved PBT Double-Shot\n"
-                "<b>Hot-Swappable HE Switches:</b> Nightfall (Gateron Custom) & Shadow (TTC Custom)")
+        data = DATA["Keyboards"]["wlmouse"]["wlmouse ying75"]["description"]
+        text = data.format(price=price, currency=currency)
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu")],
@@ -129,56 +120,24 @@ def models_of_keyboards(model, price, currency):
 # Выбор модели для мышек
 def models_of_mouse(model, price, currency):
     if model == "WLmouse beast X Max":
-        text = (f"<b>Price💰:</b> {price} {currency}\n"
-                "<b>MCU</b>: Nordic 52840\n"
-                "<b>Sensor</b>: PAW3950 HS\n"
-                "<b>Polling Rate</b>: 125-8000Hz (Adjustable)\n"
-                "<b>Encoder</b>: TTC Dust-Proof silver\n"
-                "<b>Switches (Main)</b>: TTC Nihil Transparent Black Dot / Omron Opticals\n"
-                "<b>Side Buttons</b>: Omron Blue Dots\n"
-                "<b>Battery</b>: Lithium-Ion Polymer 300Mah Capacity\n"
-                "<b>Reciever</b>: Nordic 52820,High Speed Chip")
+        data = DATA["Mice"]["wlmouse"]["WLmouse beast X Max"]["description"]
+        text = data.format(price=price, currency=currency)
 
     elif model == "WLmouse Strider":
-        text = (f"<b>Price💰:</b> {price} {currency}\n"
-                "<b>MCU:</b> Nordic 52840\n"
-                "<b>Sensor:</b> 3950HS\n"
-                "<b>Polling Rate:</b> 125- 8000Hz(Adjustable)\n"
-                "<b>DPI:</b> 50-30,000\n"
-                "<b>Encoder:</b> TTC Dust-Proof silver\n"
-                "<b>LMB/RMB:</b> TTC Nihil Transparent Black Dot / Omron Opticals\n"
-                "<b>Side Buttons:</b> Omron Blue Dots\n"
-                "<b>Battery:</b> 300mAh")
+        data = DATA["Mice"]["wlmouse"]["WLmouse Strider"]["description"]
+        text = data.format(price=price, currency=currency)
 
     elif model == "ATK Blazing Sky F1":
-        text = (f"<b>Price💰: </b> {price} {currency}\n"
-                "<b>Sensor: </b>PAW3950 / PAW3950 Ultra\n"
-                "<b>MCU: </b>Nordic 52840\n"
-                "<b>Polling Rate: </b>125-8000Hz (Adjustable)\n"
-                "<b>Weight: </b>35g-50g (Varies by Model)\n"
-                "<b>Coating: </b>Ice-feeling\n"
-                "<b>Dimensions: </b>118.2mm x 62.4mm x 38.8mm")
+        data = DATA["Mice"]["atk"]["ATK Blazing Sky F1"]["description"]
+        text = data.format(price=price, currency=currency)
 
     elif model == "Scyrox V6":
-        text = (f"<b>Price💰: </b> {price} {currency}\n"
-                "<b>Connection: </b>Wireless/wired"
-                "<b>MCU:</b> Nordic 52840\n"
-                "<b>LOD: </b>0.7 - 2.0 mm\n"
-                "<b>Weight: </b>40g\n"
-                "<b>Sensor: </b>PixArt PAW 3950\n"
-                "<b>Switch: </b>Omron Optical\n"               
-                "<b>Battery: </b>250mAh\n"
-                "<b>Polling Rate: </b>8000 Hz")
+        data = DATA["Mice"]["scyrox"]["Scyrox V6"]["description"]
+        text = data.format(price=price, currency=currency)
 
     elif model == "Finalmouse ULX Prophecy":
-        text = (f"<b>Price💰: </b> {price} {currency}\n"
-                "<b>Connection: </b>Wireless/wired"
-                "<b>MCU:</b> Nordic 52840\n"
-                "<b>Weight: </b>36g\n"  
-                "<b>Sensor: </b>PixArt PAW 3395\n"
-                "<b>Switch: </b>Transparent Blue Shell Pink Dot\n"               
-                "<b>Battery: </b>250mAh\n"
-                "<b>Polling Rate: </b>8000 Hz")
+        data = DATA["Mice"]["finalmouse"]["Finalmouse ULX Prophecy"]["description"]
+        text = data.format(price=price, currency=currency)
 
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
@@ -191,28 +150,17 @@ def models_of_mouse(model, price, currency):
 
 def models_of_mousepad(model, price, currency):
     if model == "WLmouse Jumi Gaming":
-        text = (f"<b>Price💰: </b> {price} {currency}\n"
-                "<b>Edges</b>: Narrow, ultra-low\n"
-                "<b>Base</b>: SlimFlex HR (Previously named Japanese Poron)\n"
-                "<b>Hardness</b>: XSoft\n"
-                "<b>Type</b>: Speed"
-        )
+        data = DATA["Mousepads"]["wlmouse"]["WLmouse Jumi Gaming"]["description"]
+        text = data.format(price=price, currency=currency)
+
     elif model == "WLmouse Meow Gaming":
-        text = (f"<b>Price💰: </b> {price} {currency}\n"
-                "<b>Size: </b>490*420*4 mm"
-                "<b>Edges: </b>Narrow, ultra-low\n"
-                "<b>Base: </b>SlimFlex HR (Previously named Japanese Poron)\n"
-                "<b>Hardness: </b>XSoft\n"
-                "<b>Type: </b>Speed\n"
-        )
+        data = DATA["Mousepads"]["wlmouse"]["WLmouse Meow Gaming"]["description"]
+        text = data.format(price=price, currency=currency)
+
     elif model == "ESP TIGER PIONEER Wu Xiang":
-        text = (f"<b>Price💰: </b> {price} {currency}\n"
-                "<b>Size: </b>480mm x 400mm\n"
-                "<b>Thickness: </b>4mm\n"
-                "<b>Edge: </b>Durable, Recessed Stitching\n"
-                "<b>Base: </b>Anti-Slip Inoac SlimFlex | Poron\n"
-                "<b>Surface: </b>NEW Rainbow Pearl Film\n"
-                "💦Water-Resistant")
+        data = DATA["Mousepads"]["esp tiger"]["ESP TIGER PIONEER Wu Xiang"]["description"]
+        text = data.format(price=price, currency=currency)
+
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu")]

@@ -4,8 +4,15 @@ defs.load_dotenv()
 BOT_TOKEN = defs.os.getenv("BOT_TOKEN")
 bot = defs.Bot(token=BOT_TOKEN)
 dp = defs.Dispatcher()
+
 BRAND = None
 CURRENCY = "KZT"
+DEVICE = None
+
+MICE = ["WLmouse beast X Max", "WLmouse Strider", "ATK Blazing Sky F1", "Scyrox V6", "Finalmouse ULX Prophecy"]
+KEYBOARDS = ["wlmouse ying75", "ATK x ASPAS RS6 Ultra", "Rainy 75", "Wooting 60HE+"]
+MOUSEPADS = ["WLmouse Jumi Gaming", "WLmouse Meow Gaming", "ESPTIGER PIONEER Wu Xiang", "ESPTIGER PIONEER - Ya sheng V2", "ESPTIGER PIONEER | Tang Dao", "Olympus Series [Ares]", "Wallhack SP-005"]
+COMPANIES = ["scyrox", "wlmouse", "atk", "finalmouse", "esptiger", "wobkey", "wooting", "evolast gear", "wallhack"]
 
 defs.logging.basicConfig(
     level = defs.logging.INFO,
@@ -101,6 +108,25 @@ We think, everyone saw themselves there. So, our shop is good variant for you.''
 
 
 
+@dp.callback_query(defs.F.data == "devices")
+async def choose_device(callback_query: defs.types.CallbackQuery):
+    defs.logging.info(f"Devices - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}")
+    try:
+        await callback_query.message.delete()
+    except Exception as e:
+        defs.logging.error("Something went wrong: " + str(e))
+
+    pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\ChatGPT Image Nov 12, 2025, 06_14_42 PM.png")
+
+    await callback_query.message.answer_photo(pic,
+        caption=f"<b>**DEVICES**</b>",
+        parse_mode="HTML",
+        reply_markup=defs.list_of_devices()
+    )
+    await callback_query.answer()
+
+
+
 @dp.callback_query(defs.F.data == "brands")
 async def brands(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'Brands - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
@@ -123,33 +149,36 @@ async def brands(callback_query: defs.types.CallbackQuery):
 
 
 
-@dp.callback_query(defs.F.data.in_(["scyrox", "wlmouse", "atk", "finalmouse", "esp tiger"]))
+@dp.callback_query(defs.F.data.in_(COMPANIES))
 async def devices(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'{callback_query.data} - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
     print(f"[DEBUG] devices() triggered! data = {callback_query.data}")
 
     global BRAND
+    global DEVICE
 
     BRAND = callback_query.data
+
     try:
         await callback_query.message.delete()
     except Exception:
         pass
 
-    pics = {
-        "scyrox": r"C:\Users\khajj\OneDrive\Desktop\PM project\c_Yau5JE_400x400.jpg",
-        "wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\wlmouse-logo.webp",
-        "atk": r"C:\Users\khajj\OneDrive\Desktop\PM project\images.png",
-        "finalmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\800.webp",
-        "esp tiger": r"C:\Users\khajj\OneDrive\Desktop\PM project\ESPTIGER_logo_large.png"
-        }
+    if DEVICE == "mice":
+        pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\SCYROX mouse.jpg")
+        keyboard = defs.get_mice_by_brand(BRAND)
 
-    pic = defs.FSInputFile(pics.get(BRAND))
+    elif DEVICE == "keyboards":
+        pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse Keyboard.jpg")
+        keyboard = defs.get_keyboards_by_brand(BRAND)
+    else:
+        pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse mousepad.jpg")
+        keyboard = defs.get_mousepads_by_brand(BRAND)
 
     await callback_query.message.answer_photo(pic,
-        caption = f"<b>**{BRAND.upper()}**</b>",
+        caption = f"<b>**{DEVICE.upper()}**\n*{BRAND.upper()}*</b>",
         parse_mode="HTML",
-        reply_markup=defs.list_of_devices(BRAND)
+        reply_markup=keyboard
     )
     await callback_query.answer()
 
@@ -159,22 +188,19 @@ async def devices(callback_query: defs.types.CallbackQuery):
 async def mice_selection(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'Mice - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
+    global DEVICE
+    DEVICE = callback_query.data
+
     try:
         await callback_query.message.delete()
     except Exception:
         pass
 
-    banners = {
-        "wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse mouse.jpg",
-        "scyrox": r"C:\Users\khajj\OneDrive\Desktop\PM project\SCYROX mouse.jpg",
-        "atk": r"C:\Users\khajj\OneDrive\Desktop\PM project\ATK GG.jpg",
-        "finalmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\finalmouse mice.jpg"
-    }
-    banner = defs.FSInputFile(banners.get(BRAND))
-    keyboard = defs.get_mouse_by_brand(BRAND)
+    banner = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\SCYROX mouse.jpg")
+    keyboard = defs.get_mice()
 
     await callback_query.message.answer_photo(banner,
-        caption = f"<b>**{BRAND.upper()}**\n*MICE*</b>",
+        caption = f"<b>**MICE**</b>",
         parse_mode = "HTML",
         reply_markup = keyboard)
 
@@ -184,21 +210,21 @@ async def mice_selection(callback_query: defs.types.CallbackQuery):
 async def keyboards_selection(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'Keyboards - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
+    global DEVICE
+    DEVICE = callback_query.data
+
     try:
         await callback_query.message.delete()
     except Exception:
         pass
-    keyboard = defs.get_keyboard_by_brand(BRAND)
-    pics = {"wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse Keyboard.jpg"}
-    pic = defs.FSInputFile(pics.get(BRAND))
 
-    if pic:
-        await callback_query.message.answer_photo(pic,
-            caption = f"<b>**{BRAND.upper()}**\n*KEYBOARDS*</b>",
-            parse_mode="HTML",
-            reply_markup=keyboard)
-    else:
-        defs.logging.error("Error - Wrong repository")
+    banner = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse Keyboard.jpg")
+    keyboard = defs.get_keyboard()
+
+    await callback_query.message.answer_photo(banner,
+        caption=f"<b>**Keyboards**</b>",
+        parse_mode="HTML",
+        reply_markup=keyboard)
 
 
 
@@ -206,18 +232,19 @@ async def keyboards_selection(callback_query: defs.types.CallbackQuery):
 async def mousepads_selection(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'Mousepads - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
+    global DEVICE
+    DEVICE = callback_query.data
+
     try:
         await callback_query.message.delete()
     except Exception:
         pass
-    keyboard = defs.get_mousepad_by_brand(BRAND)
+    keyboard = defs.get_mousepad()
+    banner = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse mousepad.jpg")
 
-    pics = {"wlmouse": r"C:\Users\khajj\OneDrive\Desktop\PM project\WLmouse mousepad.jpg"}
-    pic = defs.FSInputFile(pics.get(BRAND))
-
-    if pic:
-        await callback_query.message.answer_photo(pic,
-            caption = "<b>**{BRAND.upper()}**\n*MOUSEPADS*</b>",
+    if banner:
+        await callback_query.message.answer_photo(banner,
+            caption = f"<b>**MOUSEPADS**</b>",
             parse_mode="HTML",
             reply_markup=keyboard)
     else:
@@ -225,11 +252,12 @@ async def mousepads_selection(callback_query: defs.types.CallbackQuery):
 
 
 
-@dp.callback_query(defs.F.data.in_(["WLmouse beast X Max", "WLmouse Strider", "ATK Blazing Sky F1", "Scyrox V6", "Finalmouse ULX Prophecy"]))
+@dp.callback_query(defs.F.data.in_(MICE))
 async def mice(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'{callback_query.data} - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
     global BRAND
+    print(callback_query.data)
 
     try:
         await callback_query.message.delete()
@@ -264,11 +292,12 @@ async def mice(callback_query: defs.types.CallbackQuery):
 
 
 
-@dp.callback_query(defs.F.data.in_(["wlmouse ying75"]))
+@dp.callback_query(defs.F.data.in_(KEYBOARDS))
 async def keyboards(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'{callback_query.data} - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
     global CURRENCY
+    print(callback_query.data)
 
     try:
         await callback_query.message.delete()
@@ -279,7 +308,10 @@ async def keyboards(callback_query: defs.types.CallbackQuery):
 
     text, keyboard = defs.models_of_keyboards(callback_query.data, price, CURRENCY)
     pics = {
-        "wlmouse ying75": r"C:\Users\khajj\OneDrive\Desktop\PM project\25455-26VTN-WLMOUSE-Ying75-Keyboard.webp"
+        "wlmouse ying75": r"C:\Users\khajj\OneDrive\Desktop\PM project\25455-26VTN-WLMOUSE-Ying75-Keyboard.webp",
+        "ATK x ASPAS RS6 Ultra": r"C:\Users\khajj\OneDrive\Desktop\PM project\ATK_RS6_Ultra_ATK_x_ASPAS.webp",
+        "Rainy 75": r"C:\Users\khajj\OneDrive\Desktop\PM project\Rainy75Pro-red-1.jpg",
+        "Wooting 60HE+": r"C:\Users\khajj\OneDrive\Desktop\PM project\wooting60HE-1.jpg"
     }
 
     pic = defs.FSInputFile(pics.get(callback_query.data))
@@ -296,11 +328,12 @@ async def keyboards(callback_query: defs.types.CallbackQuery):
 
 
 
-@dp.callback_query(defs.F.data.in_(["WLmouse Jumi Gaming", "WLmouse Meow Gaming", "ESP TIGER PIONEER Wu Xiang"]))
+@dp.callback_query(defs.F.data.in_(MOUSEPADS))
 async def mousepads(callback_query: defs.types.CallbackQuery):
     defs.logging.info(f'{callback_query.data} - User name: {callback_query.from_user.first_name} - ID: {callback_query.message.from_user.id} - Time: {defs.datetime.now().strftime("%H:%M:%S")}')
 
     global CURRENCY
+    print(callback_query.data)
 
     try:
         await callback_query.message.delete()
@@ -317,7 +350,11 @@ async def mousepads(callback_query: defs.types.CallbackQuery):
     pics = {
         "WLmouse Jumi Gaming": r"C:\Users\khajj\OneDrive\Desktop\PM project\wlmouse_jumi_gaming_mouse_pad_ac91240_97896.webp",
         "WLmouse Meow Gaming": r"C:\Users\khajj\OneDrive\Desktop\PM project\2_939f53bb-82f8-4b68-bbf1-71a0a1956101.webp",
-        "ESP TIGER PIONEER Wu Xiang": r"C:\Users\khajj\OneDrive\Desktop\PM project\ESPTIGER_PIONEER_WUXIANG_WATER_RESISTANCE_GAMING_MOUSEPAD_1.webp"
+        "ESPTIGER PIONEER Wu Xiang": r"C:\Users\khajj\OneDrive\Desktop\PM project\ESPTIGER_PIONEER_WUXIANG_WATER_RESISTANCE_GAMING_MOUSEPAD_1.webp",
+        "ESPTIGER PIONEER - Ya sheng V2": r"C:\Users\khajj\OneDrive\Desktop\PM project\2_a7b965b6-0e5c-4b9a-9b46-8a1db882aa6c.webp",
+        "ESPTIGER PIONEER | Tang Dao": r"C:\Users\khajj\OneDrive\Desktop\PM project\ESPTIGER_PIONEER_TANG_DAO_GREY_LARGE_GAMING_MOUSEPAD_2.webp",
+        "Olympus Series [Ares]": r"C:\Users\khajj\OneDrive\Desktop\PM project\Ares.png",
+        "Wallhack SP-005": r"C:\Users\khajj\OneDrive\Desktop\PM project\2048x2048_WEB_PRODUCT-IMG-GlassPad-SP-005-Awakening-Image1.webp"
     }
 
     print(f"callback_query.data = '{callback_query.data}'")

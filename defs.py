@@ -78,40 +78,61 @@ async def convertation(device, currency, brand, model):
     return price
 
 
-
-def get_keyboard_by_brand(brand):
-    if brand == "wlmouse":
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="YING75 HE Forged Carbon Fiber", callback_data="wlmouse ying75")],
-                [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data=brand)],
-            ]
-        )
-    else:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data=brand)],
-            ]
-        )
-
-
-def list_of_devices(brand):
+def get_mice_by_brand(brand):
     buttons = []
 
-    for category, brands in DATA.items():
-        if brand in brands:
-            buttons.append([InlineKeyboardButton(text=category.upper(), callback_data=category.lower())])
-        else:
-            print(f"[DEBUG] ❌ NOT FOUND: {brand} in {category}")
+    for mouse in DATA["Mice"][brand].keys():
+        buttons.append([InlineKeyboardButton(text = f"{mouse}", callback_data=mouse)])
 
-    buttons.append([InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data='brands')])
-    return InlineKeyboardMarkup(inline_keyboard = buttons)
+    buttons.append([InlineKeyboardButton(text = f"Back", callback_data="mice"), InlineKeyboardButton(text=f"Back to menu", callback_data="back_to_menu")])
+
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def get_keyboards_by_brand(brand):
+    buttons = []
+
+    for keyboard in DATA["Keyboards"][brand].keys():
+        buttons.append([InlineKeyboardButton(text=f"{keyboard}", callback_data=keyboard)])
+
+    buttons.append([InlineKeyboardButton(text=f"Back", callback_data="keyboards"), InlineKeyboardButton(text=f"Back to menu", callback_data="back_to_menu")])
+
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def get_mousepads_by_brand(brand):
+    buttons = []
+
+    for mousepad in DATA["Mousepads"][brand].keys():
+        buttons.append([InlineKeyboardButton(text=f"{mousepad}", callback_data=mousepad)])
+
+    buttons.append([InlineKeyboardButton(text=f"Back", callback_data="mousepads"), InlineKeyboardButton(text=f"Back to menu", callback_data="back_to_menu")])
+
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def list_of_devices():
+    return InlineKeyboardMarkup(inline_keyboard = [
+        [InlineKeyboardButton(text = "Mice", callback_data="mice")],
+        [InlineKeyboardButton(text = "Keyboards", callback_data="keyboards")],
+        [InlineKeyboardButton(text = "Mousepads", callback_data="mousepads")],
+        [InlineKeyboardButton(text = "Back to menu", callback_data="back_to_menu")],
+    ])
 
 
 def models_of_keyboards(model, price, currency):
     global DATA
     if model == "wlmouse ying75":
         data = DATA["Keyboards"]["wlmouse"]["wlmouse ying75"]["description"]
+        text = data.format(price=price, currency=currency)
+    elif model == "ATK x ASPAS RS6 Ultra":
+        data = DATA["Keyboards"]["atk"]["ATK x ASPAS RS6 Ultra"]["description"]
+        text = data.format(price=price, currency=currency)
+    elif model == "Rainy 75":
+        data = DATA["Keyboards"]["wobkey"]["Rainy 75"]["description"]
+        text = data.format(price=price, currency=currency)
+    elif model == "Wooting 60HE+":
+        data = DATA["Keyboards"]["wooting"]["Wooting 60HE+"]["description"]
         text = data.format(price=price, currency=currency)
 
     keyboard = InlineKeyboardMarkup(
@@ -120,7 +141,6 @@ def models_of_keyboards(model, price, currency):
         ]
     )
     return text, keyboard
-
 
 
 # Выбор модели для мышек
@@ -158,13 +178,23 @@ def models_of_mousepad(model, price, currency):
     if model == "WLmouse Jumi Gaming":
         data = DATA["Mousepads"]["wlmouse"]["WLmouse Jumi Gaming"]["description"]
         text = data.format(price=price, currency=currency)
-
     elif model == "WLmouse Meow Gaming":
         data = DATA["Mousepads"]["wlmouse"]["WLmouse Meow Gaming"]["description"]
         text = data.format(price=price, currency=currency)
-
-    elif model == "ESP TIGER PIONEER Wu Xiang":
-        data = DATA["Mousepads"]["esp tiger"]["ESP TIGER PIONEER Wu Xiang"]["description"]
+    elif model == "ESPTIGER PIONEER Wu Xiang":
+        data = DATA["Mousepads"]["esptiger"]["ESPTIGER PIONEER Wu Xiang"]["description"]
+        text = data.format(price=price, currency=currency)
+    elif model == "ESPTIGER PIONEER - Ya sheng V2":
+        data = DATA["Mousepads"]["esptiger"]["ESPTIGER PIONEER - Ya sheng V2"]["description"]
+        text = data.format(price=price, currency=currency)
+    elif model == "ESPTIGER PIONEER | Tang Dao":
+        data = DATA["Mousepads"]["esptiger"]["ESPTIGER PIONEER | Tang Dao"]["description"]
+        text = data.format(price=price, currency=currency)
+    elif model == "Olympus Series [Ares]":
+        data = DATA["Mousepads"]["evolast gear"]["Olympus Series [Ares]"]["description"]
+        text = data.format(price=price, currency=currency)
+    elif model == "Wallhack SP-005":
+        data = DATA["Mousepads"]["wallhack"]["Wallhack SP-005"]["description"]
         text = data.format(price=price, currency=currency)
 
     keyboard = InlineKeyboardMarkup(
@@ -176,80 +206,37 @@ def models_of_mousepad(model, price, currency):
 
 
 # Выбор "клавиатуры" в зависимости от бренда
-def get_mouse_by_brand(brand):
-    if brand == "scyrox":
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="Scyrox V6", callback_data="Scyrox V6")],
-                [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data="scyrox")],
-            ]
-        )
-    elif brand == "atk":
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="ATK Blazing Sky F1", callback_data=f"ATK Blazing Sky F1")],
-                [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data="atk")]
-            ]
-        )
-    elif brand == "wlmouse":
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="WLmouse beast X Max", callback_data="WLmouse beast X Max")],
-                [InlineKeyboardButton(text="WLmouse Strider", callback_data="WLmouse Strider")],
-                [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data="wlmouse")]
-            ]
-        )
-    elif brand == "finalmouse":
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text = "Finalmouse ULX Prophecy", callback_data="Finalmouse ULX Prophecy")],
-                [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"), InlineKeyboardButton(text="Back", callback_data="finalmouse")]
-            ]
-        )
-    else:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="Назад", callback_data=brand)]
-            ]
-        )
+def get_mice():
+    buttons = []
+
+    for brand in DATA["Mice"].keys():
+        buttons.append([InlineKeyboardButton(text = f"{brand.upper()}", callback_data=f"{brand}")])
+
+    buttons.append([InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"),
+                    InlineKeyboardButton(text="Back", callback_data='devices')])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-def get_mousepad_by_brand(brand):
-    if brand == "wlmouse":
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="WLmouse Jumi Gaming", callback_data="WLmouse Jumi Gaming")],
-                [InlineKeyboardButton(text="WLmouse Meow Gaming", callback_data="WLmouse Meow Gaming")],
-                [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"),
-                 InlineKeyboardButton(text="Back", callback_data="wlmouse")]
-            ]
-        )
-    elif brand == "esp tiger":
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="ESP TIGER PIONEER Wu Xiang", callback_data="ESP TIGER PIONEER Wu Xiang")],
-                [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"),
-                 InlineKeyboardButton(text="Back", callback_data="finalmouse")]
-            ]
-        )
-    else:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="Back", callback_data=brand)]
-            ]
-        )
+def get_keyboard():
+    buttons = []
+
+    for brand in DATA["Keyboards"].keys():
+        buttons.append([InlineKeyboardButton(text=f"{brand.upper()}", callback_data=f"{brand}")])
+
+    buttons.append([InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"),
+                    InlineKeyboardButton(text="Back", callback_data='devices')])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-# "Клавиатура" для мышек
-def mice_and_keyboards():
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="Scyrox", callback_data="scyrox"),InlineKeyboardButton(text="WLmouse", callback_data="wlmouse")],
-            [InlineKeyboardButton(text="ATK", callback_data="atk"), InlineKeyboardButton(text="Finalmouse", callback_data="finalmouse")],
-            [InlineKeyboardButton(text="ESP TIGER", callback_data="esp tiger")],
-            [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu")]
-        ]
-    )
+def get_mousepad():
+    buttons = []
+
+    for brand in DATA["Mousepads"].keys():
+        buttons.append([InlineKeyboardButton(text=f"{brand.upper()}", callback_data=f"{brand}")])
+
+    buttons.append([InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu"),
+                    InlineKeyboardButton(text="Back", callback_data='devices')])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
 def main_menu():
@@ -257,7 +244,7 @@ def main_menu():
         inline_keyboard=[
             [InlineKeyboardButton(text="About bot", callback_data="about bot"),
              InlineKeyboardButton(text="About Shop", callback_data="about shop")],
-            [InlineKeyboardButton(text="Brands", callback_data="brands"),
+            [InlineKeyboardButton(text="Devices", callback_data="devices"),
              InlineKeyboardButton(text="Site", url="https://www.instagram.com/reel/DNksxjEtvAv/?igsh=MWQwdHh0eGM2NHg1ag==")],
             [InlineKeyboardButton(text="Change currency", callback_data="currency")],
             [InlineKeyboardButton(text="Back to menu", callback_data="back_to_menu")]

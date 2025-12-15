@@ -84,10 +84,14 @@ async def about_bot(callback_query: defs.types.CallbackQuery):
     except Exception:
         pass
 
-    await callback_query.message.answer('''<b>**ABOUT BOT**</b>
+    pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\banner 2.jpg")
+    await callback_query.message.answer_photo(
+        pic,
+        caption = '''<b>**ABOUT BOT**</b>
 I'm bot of popular "Hiru shop". You can ask me questions about different keyboard modals we sell.
 Also you can find our site or see information, price and characteristics of different keyboards and computer mice that we sell.''',
-    parse_mode="HTML", reply_markup=defs.main_menu())
+        parse_mode="HTML",
+        reply_markup=defs.main_menu())
     await callback_query.answer()
 
 
@@ -100,10 +104,17 @@ async def about_shop(callback_query: defs.types.CallbackQuery):
         await callback_query.message.delete()
     except Exception:
         pass
-    await callback_query.message.answer('''<b>**ABOUT SHOP**</b>
+
+    pic = defs.FSInputFile(r"C:\Users\khajj\OneDrive\Desktop\PM project\about us .jpg")
+
+    await callback_query.message.answer_photo(pic,
+        caption = '''<b>**ABOUT US**</b>
 "Hiru shop" is well-known internet shop of different top devices. Did you had this situation:
 <b>You need cool, comfortable device to play your lovely video games or work comfortably, but you don't have much money.</b>
-We think, everyone saw themselves there. So, our shop is good variant for you.''', parse_mode = "HTML", reply_markup=defs.main_menu())
+We think, everyone saw themselves there. So, our shop is good variant for you.''',
+        parse_mode = "HTML",
+        reply_markup=defs.main_menu())
+
     await callback_query.answer()
 
 

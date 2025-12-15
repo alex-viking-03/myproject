@@ -1652,3 +1652,105 @@ expected str, bytes or os.PathLike object, not NoneType
 2025-11-12 18:15:58,064 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
 2025-11-12 18:15:58,065 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8331943625)
 2025-11-12 18:15:58,321 - aiogram.dispatcher - INFO - Polling stopped for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'
+2025-11-15 20:50:33,257 - root - INFO - Bot started
+2025-11-15 20:50:33,258 - aiogram.dispatcher - INFO - Start polling
+2025-11-15 20:50:33,672 - aiogram.dispatcher - INFO - Run polling for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'
+2025-11-15 20:50:48,254 - root - INFO - Start - User name: Alex - ID: 1498966676 - Time: 20:50:48
+2025-11-15 20:50:49,148 - aiogram.event - INFO - Update id=432030375 is handled. Duration 894 ms by bot id=8331943625
+2025-11-15 20:50:51,502 - root - INFO - About shop - User name: Alex - ID: 8331943625 - Time: 20:50:51
+2025-11-15 20:50:51,894 - root - ERROR - Exception caught:
+'Message' object has no attribute 'answer_phto'
+2025-11-15 20:50:51,894 - root - ERROR - Something went wrong: 'Message' object has no attribute 'answer_phto'
+2025-11-15 20:50:52,200 - aiogram.event - INFO - Update id=432030376 is handled. Duration 699 ms by bot id=8331943625
+2025-11-15 20:51:49,069 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-15 20:51:49,070 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-11-15 20:51:49,070 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8331943625)
+2025-11-15 20:51:49,334 - aiogram.dispatcher - INFO - Polling stopped for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'
+2025-11-15 20:51:53,687 - root - INFO - Bot started
+2025-11-15 20:51:53,688 - aiogram.dispatcher - INFO - Start polling
+2025-11-15 20:51:54,053 - aiogram.dispatcher - INFO - Run polling for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'
+2025-11-15 20:54:42,602 - root - INFO - Start - User name: Alex - ID: 1498966676 - Time: 20:54:42
+2025-11-15 20:54:43,535 - aiogram.event - INFO - Update id=432030377 is handled. Duration 934 ms by bot id=8331943625
+2025-11-15 20:54:45,697 - root - INFO - About shop - User name: Alex - ID: 8331943625 - Time: 20:54:45
+2025-11-15 20:54:47,259 - aiogram.event - INFO - Update id=432030378 is handled. Duration 1563 ms by bot id=8331943625
+2025-11-15 20:55:11,383 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-15 20:55:11,385 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-11-15 20:55:11,385 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8331943625)
+2025-11-15 20:55:11,636 - aiogram.dispatcher - INFO - Polling stopped for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'
+2025-11-20 16:14:44,082 - root - INFO - Bot started
+2025-11-20 16:14:44,083 - aiogram.dispatcher - INFO - Start polling
+2025-11-20 16:14:45,621 - aiogram.dispatcher - INFO - Run polling for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'
+2025-11-20 16:14:46,143 - root - INFO - Start - User name: Alex - ID: 1498966676 - Time: 16:14:46
+2025-11-20 16:14:47,980 - aiogram.event - INFO - Update id=432030379 is handled. Duration 1838 ms by bot id=8331943625
+2025-11-20 16:14:52,824 - root - INFO - About bot - User name: Alex - ID: 8331943625 - Time: 16:14:52
+2025-11-20 16:14:53,403 - aiogram.event - INFO - Update id=432030380 is handled. Duration 579 ms by bot id=8331943625
+2025-11-20 16:14:56,583 - root - INFO - About shop - User name: Alex - ID: 8331943625 - Time: 16:14:56
+2025-11-20 16:14:58,419 - aiogram.event - INFO - Update id=432030381 is handled. Duration 1837 ms by bot id=8331943625
+2025-11-20 16:15:00,676 - root - INFO - Devices - User name: Alex - ID: 8331943625 - Time: 16:15:00
+2025-11-20 16:15:03,847 - aiogram.event - INFO - Update id=432030382 is handled. Duration 3172 ms by bot id=8331943625
+2025-11-20 16:15:05,078 - root - INFO - Mice - User name: Alex - ID: 8331943625 - Time: 16:15:05
+2025-11-20 16:15:06,512 - aiogram.event - INFO - Update id=432030383 is handled. Duration 1435 ms by bot id=8331943625
+2025-11-20 16:15:09,289 - root - INFO - finalmouse - User name: Alex - ID: 8331943625 - Time: 16:15:09
+2025-11-20 16:15:10,195 - aiogram.event - INFO - Update id=432030384 is handled. Duration 907 ms by bot id=8331943625
+2025-11-20 16:15:18,390 - root - INFO - Back to menu - User name: Alex - ID: 8331943625 - Time: 16:15:18
+2025-11-20 16:15:18,608 - root - INFO - Start - User name: MyTestProject - ID: 8331943625 - Time: 16:15:18
+2025-11-20 16:15:19,124 - aiogram.event - INFO - Update id=432030385 is handled. Duration 735 ms by bot id=8331943625
+2025-11-20 16:15:28,630 - root - INFO - Devices - User name: Alex - ID: 8331943625 - Time: 16:15:28
+2025-11-20 16:15:30,061 - aiogram.event - INFO - Update id=432030386 is handled. Duration 1431 ms by bot id=8331943625
+2025-11-20 16:15:33,034 - root - INFO - Keyboards - User name: Alex - ID: 8331943625 - Time: 16:15:33
+2025-11-20 16:15:34,771 - aiogram.event - INFO - Update id=432030387 is handled. Duration 1738 ms by bot id=8331943625
+2025-11-20 16:15:36,528 - root - INFO - atk - User name: Alex - ID: 8331943625 - Time: 16:15:36
+2025-11-20 16:15:37,535 - aiogram.event - INFO - Update id=432030388 is handled. Duration 1008 ms by bot id=8331943625
+2025-11-20 16:15:41,430 - root - INFO - ATK x ASPAS RS6 Ultra - User name: Alex - ID: 8331943625 - Time: 16:15:41
+2025-11-20 16:15:42,461 - root - INFO - Convertation Ч ”спех. ¬рем€ запроса: 0.828952 сек.
+2025-11-20 16:15:43,067 - aiogram.event - INFO - Update id=432030389 is handled. Duration 1639 ms by bot id=8331943625
+2025-11-20 16:15:46,766 - root - INFO - Back to menu - User name: Alex - ID: 8331943625 - Time: 16:15:46
+2025-11-20 16:15:47,065 - root - INFO - Start - User name: MyTestProject - ID: 8331943625 - Time: 16:15:47
+2025-11-20 16:15:47,483 - aiogram.event - INFO - Update id=432030390 is handled. Duration 720 ms by bot id=8331943625
+2025-11-20 16:15:53,307 - aiogram.event - INFO - Update id=432030391 is handled. Duration 2764 ms by bot id=8331943625
+2025-11-20 16:16:02,842 - root - INFO - Convertation Ч ”спех. ¬рем€ запроса: 0.628115 сек.
+2025-11-20 16:16:03,239 - root - INFO - Start - User name: Alex - ID: 1498966676 - Time: 16:16:03
+2025-11-20 16:16:03,751 - aiogram.event - INFO - Update id=432030392 is handled. Duration 1947 ms by bot id=8331943625
+2025-11-20 16:16:08,258 - root - INFO - Devices - User name: Alex - ID: 8331943625 - Time: 16:16:08
+2025-11-20 16:16:09,702 - aiogram.event - INFO - Update id=432030393 is handled. Duration 1446 ms by bot id=8331943625
+2025-11-20 16:16:14,760 - root - INFO - Keyboards - User name: Alex - ID: 8331943625 - Time: 16:16:14
+2025-11-20 16:16:15,934 - aiogram.event - INFO - Update id=432030394 is handled. Duration 1176 ms by bot id=8331943625
+2025-11-20 16:16:18,717 - root - INFO - atk - User name: Alex - ID: 8331943625 - Time: 16:16:18
+2025-11-20 16:16:19,841 - aiogram.event - INFO - Update id=432030395 is handled. Duration 1125 ms by bot id=8331943625
+2025-11-20 16:16:22,051 - root - INFO - ATK x ASPAS RS6 Ultra - User name: Alex - ID: 8331943625 - Time: 16:16:22
+2025-11-20 16:16:22,792 - root - INFO - Convertation Ч ”спех. ¬рем€ запроса: 0.594134 сек.
+2025-11-20 16:16:23,045 - aiogram.event - INFO - Update id=432030396 is handled. Duration 996 ms by bot id=8331943625
+2025-11-20 16:16:37,929 - root - INFO - Back to menu - User name: Alex - ID: 8331943625 - Time: 16:16:37
+2025-11-20 16:16:38,110 - root - INFO - Start - User name: MyTestProject - ID: 8331943625 - Time: 16:16:38
+2025-11-20 16:16:38,651 - aiogram.event - INFO - Update id=432030397 is handled. Duration 723 ms by bot id=8331943625
+2025-11-20 16:17:03,092 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-20 16:17:03,093 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-11-20 16:17:03,094 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8331943625)
+2025-11-20 16:17:03,377 - aiogram.dispatcher - INFO - Polling stopped for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'
+2025-11-23 06:44:36,241 - root - INFO - Bot started
+2025-11-23 06:44:36,242 - aiogram.dispatcher - INFO - Start polling
+2025-11-23 06:44:36,612 - aiogram.dispatcher - INFO - Run polling for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'
+2025-11-23 06:45:01,697 - root - INFO - Start - User name: Alex - ID: 1498966676 - Time: 06:45:01
+2025-11-23 06:45:02,428 - aiogram.event - INFO - Update id=432030398 is handled. Duration 732 ms by bot id=8331943625
+2025-11-23 06:45:05,386 - root - INFO - About bot - User name: Alex - ID: 8331943625 - Time: 06:45:05
+2025-11-23 06:45:06,609 - aiogram.event - INFO - Update id=432030399 is handled. Duration 1224 ms by bot id=8331943625
+2025-11-23 06:45:09,171 - root - INFO - About shop - User name: Alex - ID: 8331943625 - Time: 06:45:09
+2025-11-23 06:45:09,578 - aiogram.event - INFO - Update id=432030400 is handled. Duration 407 ms by bot id=8331943625
+2025-11-23 06:45:11,768 - root - INFO - Devices - User name: Alex - ID: 8331943625 - Time: 06:45:11
+2025-11-23 06:45:12,548 - aiogram.event - INFO - Update id=432030401 is handled. Duration 781 ms by bot id=8331943625
+2025-11-23 06:45:22,699 - root - INFO - Back to menu - User name: Alex - ID: 8331943625 - Time: 06:45:22
+2025-11-23 06:45:22,789 - root - INFO - Start - User name: MyTestProject - ID: 8331943625 - Time: 06:45:22
+2025-11-23 06:45:22,974 - aiogram.event - INFO - Update id=432030402 is handled. Duration 277 ms by bot id=8331943625
+2025-11-23 06:45:53,247 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-23 06:45:53,249 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-11-23 06:45:53,249 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8331943625)
+2025-11-23 06:45:53,513 - aiogram.dispatcher - INFO - Polling stopped for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'
+2025-11-23 06:45:57,469 - root - INFO - Bot started
+2025-11-23 06:45:57,469 - aiogram.dispatcher - INFO - Start polling
+2025-11-23 06:45:57,811 - aiogram.dispatcher - INFO - Run polling for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'
+2025-11-23 06:45:59,254 - root - INFO - Devices - User name: Alex - ID: 8331943625 - Time: 06:45:59
+2025-11-23 06:46:00,880 - aiogram.event - INFO - Update id=432030403 is handled. Duration 1629 ms by bot id=8331943625
+2025-11-23 06:46:05,902 - aiogram.dispatcher - INFO - Polling stopped
+2025-11-23 06:46:05,904 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-11-23 06:46:05,904 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8331943625)
+2025-11-23 06:46:06,163 - aiogram.dispatcher - INFO - Polling stopped for bot @MyTest_ProjectBot id=8331943625 - 'MyTestProject'

@@ -114,8 +114,7 @@ def get_mousepads_by_brand(brand):
 def list_of_devices():
     return InlineKeyboardMarkup(inline_keyboard = [
         [InlineKeyboardButton(text = "Mice", callback_data="mice")],
-        [InlineKeyboardButton(text = "Keyboards", callback_data="keyboards")],
-        [InlineKeyboardButton(text = "Mousepads", callback_data="mousepads")],
+        [InlineKeyboardButton(text = "Keyboards", callback_data="keyboards"), InlineKeyboardButton(text = "Mousepads", callback_data="mousepads")],
         [InlineKeyboardButton(text = "Back to menu", callback_data="back_to_menu")],
     ])
 
